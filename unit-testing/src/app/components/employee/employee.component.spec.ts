@@ -1,0 +1,7 @@
+
+describe('EmployeeComponent', () => {
+
+  beforeEach(() => {
+
+  });
+});
