@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmployeeService } from './services/employee.service';
 import { EmployeeValidators } from './validators/employee.validator';
 
@@ -31,6 +31,7 @@ export class AppComponent {
         [Validators.required, EmployeeValidators.emailValidator],
       ],
       rating: [],
+      addresses: this.fb.array([])
     },
     {
       validators: EmployeeValidators.checkEmailsMatch,
@@ -51,6 +52,10 @@ export class AppComponent {
     return this.form.get('emailConfirm');
   }
 
+  get addresses() {
+    return this.form.get('addresses') as FormArray;;
+  }
+
   submit() {
     this.form.markAllAsTouched();
     if (this.form.valid) {
@@ -58,5 +63,21 @@ export class AppComponent {
     } else {
       console.error('Form is invalid. Cannot submit...');
     }
+  }
+
+  newAddress(): FormGroup {
+    return this.fb.group({
+      street: '',
+      city: '',
+    });
+  }
+
+  addAddress() {
+    const emptyAddress = this.newAddress();
+    this.addresses.push(emptyAddress);
+  }
+
+  removeAddress(index: number) {
+    this.addresses.removeAt(index);
   }
 }
