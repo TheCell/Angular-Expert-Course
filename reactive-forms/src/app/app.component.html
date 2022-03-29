@@ -10,6 +10,16 @@
 
 <div class="content" role="main">
   <div class="card-container">
+    <div class="role-section">
+      <span> Current role: {{ currentUserRole }} </span>
+      <button
+        type="button"
+        class="btn btn-ok btn-primary form-button"
+        (click)="changeUserRole()" >
+        Set as {{ currentUserRole === "user" ? "Site Admin" : "User" }}
+      </button>
+    </div>
+
     <form [formGroup]="form">
       <div class="form-group">
         <label class="col-sm-2 col-form-label">Firstname</label>
@@ -100,10 +110,10 @@
         <button
           type="button"
           class="btn btn-ok btn-primary add-button form-button"
-          (click)="addAddress()"
-        >
+          (click)="addAddress()" >
           Add Address
         </button>
+
         <div formArrayName="addresses">
           <div *ngFor="let address of addresses.controls; let i = index">
             <div [formGroupName]="i" class="address-group">
@@ -129,6 +139,50 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="form-group mb-2">
+        <div *ngIf="dynamicFields; else loader" class="col-sm-10">
+          <fieldset>
+            <legend>Dynamic Form</legend>
+            <div
+              class="row mb-1"
+              *ngFor="let dynamicField of dynamicFields;">
+              <div class="col" formGroupName="dynamicForm">
+                <ng-container [ngSwitch]="dynamicField.type">
+                  <label
+                    class="form-label"
+                    *ngIf="dynamicField.type !== formFieldTypes.checkbox">
+                    {{ dynamicField.label }}
+                  </label>
+                  <ng-container *ngSwitchCase="formFieldTypes.text">
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      [formControlName]="dynamicField.fieldId" />
+                  </ng-container>
+                  <ng-container *ngSwitchCase="formFieldTypes.checkbox">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [formControlName]="dynamicField.fieldId" />
+                      <label class="form-check-label">{{
+                        dynamicField.label
+                      }}</label>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <ng-template #loader>
+          <div class="loader-wrap">
+            <div class="loader"></div>
+          </div>
+        </ng-template>
       </div>
 
       <div class="form-actions">
